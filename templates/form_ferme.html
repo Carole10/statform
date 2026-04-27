@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block fasterNavigation %}
+<div>
+    <a href="/dashboard" class="mr-4">Dashboard</a>
+    <a href="/new" class="btn-primary">+ Nouveau</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="card text-center py-16">
+        <div class="text-6xl mb-4">🔒</div>
+        <h1 class="text-3xl font-bold mb-4">Sondage terminé</h1>
+        <p class="text-lg text-gray-600 mb-2">Le formulaire <strong>{{ form.titre }}</strong> n’accepte plus de réponses.</p>
+        {% if form.expires_at %}
+        <p class="text-sm text-gray-500">Fermé le {{ form.expires_at.strftime('%d/%m/%Y à %H:%M') }}</p>
+        {% endif %}
+        <a href="/" class="btn-primary inline-block mt-8">Retour à l’accueil</a>
+    </div>
+</div>
+{% endblock %}

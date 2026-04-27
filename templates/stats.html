@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block fasterNavigation %}
+<div>
+    <a href="/dashboard" class="mr-4">Dashboard</a>
+    <a href="/new" class="btn-primary">+ Nouveau</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Stats : {{ form.titre }}</h1>
+    <span class="text-2xl font-bold text-blue-600">{{ nb_reponses }} Réponses</span>
+</div>
+
+{% if df_empty %}
+<div class="card text-center py-12">
+    <p class="text-xl">Aucune réponse pour l'instant.</p>
+    <p class="text-gray-600 mt-2">Partage ton lien pour commencer à collecter!</p>
+</div>
+{% else %}
+
+<h2 class="text-2xl font-bold mt-8 mb-4">Tableaux d'effectifs</h2>
+<div class="grid md:grid-cols-2 gap-6">
+    {% for col, table in stats.tables.items() %}
+    <div class="card">
+        <h3 class="text-xl font-semibold mb-3">{{ col }}</h3>
+        <table class="w-full">
+            <thead><tr class="border-b"><th class="text-left py-2">Valeur</th><th class="text-right">Effectif</th></tr></thead>
+            <tbody>
+            {% for val, data in table.items() %}
+            <tr class="border-b"><td class="py-2">{{ val }}</td><td class="text-right font-semibold">{{ data.Effectif }}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</div>
+
+<h2 class="text-2xl font-bold mt-12 mb-4">Graphiques</h2>
+<div class="grid md:grid-cols-2 gap-6">
+    {% for nom, path in stats.charts.items() %}
+    <div class="card">
+        <img src="/{{ path }}" class="w-full rounded-lg">
+    </div>
+    {% endfor %}
+</div>
+
+{% if stats.regression %}
+<div class="card mt-6">
+    <h3 class="text-xl font-semibold mb-3">Régression linéaire</h3>
+    <p class="text-lg">Équation : <code class="bg-gray-100 px-2 py-1 rounded">y = {{ "%.2f"|format(stats.regression.coef) }}x + {{ "%.2f"|format(stats.regression.intercept) }}</code></p>
+    <p class="text-lg mt-2">Coefficient R² : <span class="font-bold text-blue-600">{{ "%.2f"|format(stats.regression.r2) }}</span></p>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

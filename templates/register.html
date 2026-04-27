@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block fasterNavigation %}
+<div>
+    <a href="/dashboard" class="mr-4">Dashboard</a>
+    <a href="/new" class="btn-primary">+ Nouveau</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+    <div class="card">
+        <h1 class="text-3xl font-bold mb-6 text-center">Créer un compte</h1>
+        <form method="POST" action="/auth/register" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">Email</label>
+                <input name="email" type="email" required class="input-field">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Mot de passe</label>
+                <input name="password" type="password" required class="input-field">
+            </div>
+            <button type="submit" class="btn-primary w-full">S’inscrire</button>
+        </form>
+        <p class="text-center mt-4 text-sm">
+            Déjà un compte ? <a href="/auth/login" class="text-blue-600 font-semibold">Connecte-toi</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

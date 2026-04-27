@@ -1,0 +1,5 @@
+venv/
+_pycache_/
+.env
+*.pyc
+static/charts/*.png

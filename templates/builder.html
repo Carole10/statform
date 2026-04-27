@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block fasterNavigation %}
+<div>
+    <a href="/dashboard" class="mr-4">Dashboard</a>
+    <a href="/new" class="btn-primary">+ Nouveau</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="card">
+        <h1 class="text-3xl font-bold mb-6">Nouveau formulaire</h1>
+        <form method="POST" action="/new" id="form-builder" class="space-y-6">
+            <div>
+                <label class="block text-lg font-medium mb-2">Titre du formulaire</label>
+                <input name="titre" type="text" required class="input-field" placeholder="Ex: Sondage satisfaction client">
+            </div>
+            
+            <div>
+                <label class="block text-lg font-medium mb-2">Date de fin (optionnel)</label>
+                <input name="expires_at" type="datetime-local" class="input-field">
+                <p class="text-sm text-gray-500 mt-1">Le formulaire se fermera automatiquement à cette date</p>
+            </div>
+
+            <div id="champs-container" class="space-y-4">
+                <h3 class="text-xl font-semibold">Questions</h3>
+                <!-- Les champs s’ajoutent ici en JS -->
+            </div>
+
+            <div class="flex gap-3">
+                <button type="button" onclick="ajouterChamp('text')" class="bg-gray-200 px-4 py-2 rounded-lg">+ Texte</button>
+                <button type="button" onclick="ajouterChamp('number')" class="bg-gray-200 px-4 py-2 rounded-lg">+ Nombre</button>
+                <button type="button" onclick="ajouterChamp('email')" class="bg-gray-200 px-4 py-2 rounded-lg">+ Email</button>
+                <button type="button" onclick="ajouterChamp('float')" class="bg-gray-200 px-4 py-2 rounded-lg">+ Réel</button>
+            </div>
+
+            <input type="hidden" name="structure" id="structure-input">
+            <button type="submit" class="btn-primary w-full text-lg mt-8">Créer le formulaire</button>
+        </form>
+    </div>
+</div>
+
+<script>
+let compteur = 0;
+function ajouterChamp(type) {
+    compteur++;
+    const div = document.createElement('div');
+    div.className = 'border p-4 rounded-lg';
+    div.innerHTML = `
+        <label class="block text-sm font-medium mb-1">Question ${compteur}</label>
+        <input type="text" placeholder="Intitulé de la question" class="input-field mb-2 champ-label" data-type="${type}" data-nom="question_${compteur}">
+        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Type: ${type}</span>
+        <button type="button" onclick="this.parentElement.remove()" class="text-red-500 text-sm ml-4">Supprimer</button>
+    `;
+    document.getElementById('champs-container').appendChild(div);
+}
+
+document.getElementById('form-builder').onsubmit = function(e) {
+    const champs = [];
+    document.querySelectorAll('.champ-label').forEach(input => {
+        if(input.value) {
+            champs.push({
+                label: input.value,
+                type: input.dataset.type,
+                nom: input.dataset.nom
+            });
+        }
+    });
+    if(champs.length === 0) {
+        e.preventDefault();
+        alert('Ajoute au moins une question');
+        return;
+    }
+    document.getElementById('structure-input').value = JSON.stringify(champs);
+}
+</script>
+{% endblock %}

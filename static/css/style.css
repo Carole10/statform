@@ -1,0 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+body { font-family: 'Poppins', sans-serif; background: #f8fafc; }
+.btn-primary { background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; transition: 0.2s; }
+.btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+.card { background: white; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 24px; }
+.input-field { width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; }
+.input-field:focus { border-color: #3b82f6; outline: none; }

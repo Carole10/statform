@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block fasterNavigation %}
+<div>
+    <a href="/dashboard" class="mr-4">Dashboard</a>
+    <a href="/new" class="btn-primary">+ Nouveau</a>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold">Mes formulaires</h1>
+</div>
+<div class="grid gap-4">
+    {% for form in forms %}
+    <div class="card flex justify-between items-center">
+        <div>
+            <h3 class="text-xl font-semibold">{{ form.titre }}</h3>
+            <p class="text-gray-500 text-sm">
+                Créé le {{ form.created_at.strftime('%d/%m/%Y') }}
+                {% if form.expires_at %} | Expire le {{ form.expires_at.strftime('%d/%m/%Y') }} {% endif %}
+                {% if not form.is_active %} | <span class="text-red-500">Clôturé</span> {% endif %}
+            </p>
+            <input class="text-sm mt-2 bg-gray-100 p-2 rounded w-96" readonly
+                value="https://statsform.onrender.com/f/{{ form.id }}">
+        </div>
+        <div class="flex gap-2">
+            <a href="/f/{{ form.id }}/stats" class="btn-primary">Stats</a>
+            {% if form.is_active %}
+            <form method="POST" action="/f/{{ form.id }}/cloturer"><button
+                    class="bg-red-500 text-white px-3 py-2 rounded">Clôturer</button></form>
+            {% else %}
+            <form method="POST" action="/f/{{ form.id }}/rouvrir"><button
+                    class="bg-green-500 text-white px-3 py-2 rounded">Rouvrir</button></form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
