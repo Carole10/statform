@@ -347,7 +347,7 @@ async def soumettre_reponse(
     request: Request,
     form_id: uuid.UUID,
     db: AsyncSession = Depends(get_async_session),
-    h_captcha_response: str = Form(alias="h-captcha-response")
+    #h_captcha_response: str = Form(alias="h-captcha-response")
 ):
     from sqlalchemy import select
     result = await db.execute(select(Formulaire).where(Formulaire.id == form_id))
@@ -355,7 +355,7 @@ async def soumettre_reponse(
     if not form or not form.is_active or (form.expires_at and form.expires_at < datetime.utcnow()):
         raise HTTPException(403, "Sondage terminé")
 
-    async with httpx.AsyncClient() as client:
+    """async with httpx.AsyncClient() as client:
         res = await client.post(
             "https://hcaptcha.com/siteverify",
             data={"secret": HCAPTCHA_SECRET, "response": h_captcha_response}
@@ -366,7 +366,7 @@ async def soumettre_reponse(
         if not res.json().get("success"):
             raise HTTPException(400, "Captcha invalide")
 
-    print("Etape de Captcha Réussi-")
+    print("Etape de Captcha Réussi-")"""
     form_data = await request.form()
     data_dict = {k: v for k, v in form_data.items() if k != "h-captcha-response"}
     db.add(Reponse(

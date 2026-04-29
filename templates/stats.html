@@ -28,9 +28,40 @@
         <table class="w-full">
             <thead><tr class="border-b"><th class="text-left py-2">Valeur</th><th class="text-right">Effectif</th></tr></thead>
             <tbody>
+            {% set total = namespace(somme=0, count=0, somme_carres=0) %}
+
             {% for val, data in table.items() %}
-            <tr class="border-b"><td class="py-2">{{ val }}</td><td class="text-right font-semibold">{{ data.Effectif }}</td></tr>
+
+                {% set total.somme = total.somme + (val | float) * data.Effectif %}
+                {% set total.count = total.count + data.Effectif %}
+                {% set total.somme_carres = total.somme_carres + ((val | float) ** 2) * data.Effectif %}
+                <tr class="border-b">
+                    <td class="py-2">{{ val }}</td>
+                    <td class="text-right font-semibold">{{ data.Effectif }}</td>
+                </tr>
             {% endfor %}
+
+
+            {% if total.count > 0 %}
+            {% set moyenne = total.somme / total.count %}
+            {% set variance = (total.somme_carres / total.count) - (moyenne ** 2) %}
+            {% set ecart_type = variance ** 0.5 %}
+            
+            <tr class="border-t-2 font-bold bg-gray-50">
+                <td class="py-2">Moyenne</td>
+                <td class="text-right">{{ moyenne | round(2) }}</td>
+            </tr>
+            <tr class="font-bold bg-gray-50">
+                <td class="py-2">Variance</td>
+                <td class="text-right">{{ variance | round(2) }}</td>
+            </tr>
+            <tr class="font-bold bg-gray-50">
+                <td class="py-2">Écart-type</td>
+                <td class="text-right">{{ ecart_type | round(2) }}</td>
+            </tr>
+            {% endif %}
+
+
             </tbody>
         </table>
     </div>
