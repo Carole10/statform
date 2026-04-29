@@ -51,7 +51,7 @@ load_dotenv()
 # On retire les params SSL incompatibles avec asyncpg
 DATABASE_URL = os.getenv("DATABASE_URL", "").replace(
     "postgresql://", "postgresql+asyncpg://"
-).split("?")[0]
+)#.split("?")[0]
 
 engine = create_async_engine(DATABASE_URL, echo=False)
 
