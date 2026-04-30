@@ -343,7 +343,7 @@ async def afficher_formulaire(
     })
 
 @app.post("/f/{form_id}/submit")
-@limiter.limit(RATE_LIMIT)
+#@limiter.limit(RATE_LIMIT)
 async def soumettre_reponse(
     request: Request,
     form_id: uuid.UUID,
