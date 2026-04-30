@@ -330,7 +330,7 @@ async def afficher_formulaire(
     db: AsyncSession = Depends(get_async_session)
 ):
     from sqlalchemy import select
-    result = await db.execute(select(Formulaire).where(Formulaire.id == form_id))
+    result = await db.execute(select(Formulaire).where(Formulaire.id == form_id, Formulaire.owner_id == user.id))
     form = result.scalar_one_or_none()
     if not form:
         raise HTTPException(404, "Formulaire introuvable")
