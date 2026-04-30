@@ -335,7 +335,7 @@ async def afficher_formulaire(
     if not form:
         raise HTTPException(404, "Formulaire introuvable")
     if not form.is_active or (form.expires_at and form.expires_at < datetime.utcnow()):
-        return templates.TemplateResponse("form_ferme.html", {"request": request, "form": form})
+        return templates.TemplateResponse(name = "form_ferme.html", request = request,context= { "form": form})
     return templates.TemplateResponse(name = "form_public.html", 
         request = request, context = {
         "form": form,
