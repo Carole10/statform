@@ -228,15 +228,16 @@ def hash_ip(ip: str):
 # --- Pages publiques ---
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    return templates.TemplateResponse("base.html", {"request": request})
+    return RedirectResponse(url="/auth/login", status_code=302)
+    #templates.TemplateResponse(name = "login.html", request= request)
 
 @app.get("/auth/login", response_class=HTMLResponse)
 def login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse(name="login.html", request= request)
 
 @app.get("/auth/register", response_class=HTMLResponse)
 def register_page(request: Request):
-    return templates.TemplateResponse("register.html", {"request": request})
+    return templates.TemplateResponse(name = "register.html", request = request)
 
 
 @app.post("/auth/register", response_class=HTMLResponse)
@@ -252,13 +253,13 @@ async def register_post(
         # Inscription OK → redirection vers login
         return RedirectResponse(url="/auth/login?registered=1", status_code=303)
     except UserAlreadyExists:
-        return templates.TemplateResponse("register.html", {
-            "request": request,
+        return templates.TemplateResponse(name = "register.html",
+            request = request, context={
             "error": "Un compte existe déjà avec cet email."
         })
     except Exception as e:
-        return templates.TemplateResponse("register.html", {
-            "request": request,
+        return templates.TemplateResponse(name = "register.html", 
+            request= request,context = {
             "error": f"Erreur : {str(e)}"
         })
 
@@ -266,7 +267,7 @@ async def register_post(
 
 @app.get("/merci", response_class=HTMLResponse)
 def page_merci(request: Request):
-    return templates.TemplateResponse("merci.html", {"request": request})
+    return templates.TemplateResponse(name = "merci.html", request= request)
 
 # --- Pages protégées ---
 @app.get("/dashboard", response_class=HTMLResponse)
@@ -284,8 +285,8 @@ async def dashboard(
         .order_by(Formulaire.created_at.desc())
     )
     forms = result.scalars().all()
-    return templates.TemplateResponse("dashboard.html", {
-        "request": request,
+    return templates.TemplateResponse(name = "dashboard.html", 
+        request = request,context = {
         "forms": forms,
         "user": user
     })
@@ -297,7 +298,7 @@ def page_builder(
 ):
     if user is None:
         return RedirectResponse(url="/auth/login", status_code=302)
-    return templates.TemplateResponse("builder.html", {"request": request, "user": user})
+    return templates.TemplateResponse(name = "builder.html", request = request, context = {"user": user})
 
 @app.post("/new")
 async def creer_formulaire(
@@ -335,8 +336,8 @@ async def afficher_formulaire(
         raise HTTPException(404, "Formulaire introuvable")
     if not form.is_active or (form.expires_at and form.expires_at < datetime.utcnow()):
         return templates.TemplateResponse("form_ferme.html", {"request": request, "form": form})
-    return templates.TemplateResponse("form_public.html", {
-        "request": request,
+    return templates.TemplateResponse(name = "form_public.html", 
+        request = request, context = {
         "form": form,
         "sitekey": HCAPTCHA_SITEKEY
     })
@@ -398,8 +399,8 @@ async def voir_stats(
     reponses = result2.scalars().all()
     print(reponses[0].data)  # ← ajoute ça pour voir les réponses dans les logs
     if not reponses:
-        return templates.TemplateResponse("stats.html", {
-            "request": request, "form": form, "df_empty": True
+        return templates.TemplateResponse(name = "stats.html", 
+            request = request,context={ "form": form, "df_empty": True
         })
     structure = form.structure  # ton JSONB, ex: [{"name": "q1", "label": "Quel est ton âge ?", ...}]
     label_map = {champ["nom"]: champ.get("label", champ["nom"]) for champ in structure}
@@ -407,8 +408,8 @@ async def voir_stats(
     df = pd.DataFrame([r.data for r in reponses])
     df = df.rename(columns=label_map)
     stats = generer_stats_completes(df, form_id)
-    return templates.TemplateResponse("stats.html", {
-        "request": request, "form": form, "stats": stats, "nb_reponses": len(df)
+    return templates.TemplateResponse(name = "stats.html", 
+        request = request, context={ "form": form, "stats": stats, "nb_reponses": len(df)
     })
 
 # --- Actions formulaire ---
