@@ -12,7 +12,8 @@ os.makedirs(CHARTS_DIR, exist_ok=True)
 def generer_stats_completes(df: pd.DataFrame, form_id: uuid.UUID):
     results = {"tables": {}, "charts": {}}
     df_numeric = df.apply(pd.to_numeric, errors='ignore')
-    del df['g-recaptcha-response']  # Supprimer la colonne avant les stats
+    if 'g-recaptcha-response' in df.columns:
+        del df['g-recaptcha-response']  # Supprimer la colonne avant les stats
     print(df.describe())
     print(df)
 
