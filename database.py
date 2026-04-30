@@ -53,7 +53,7 @@ DATABASE_URL = os.getenv("DATABASE_URL", "").replace(
     "postgresql://", "postgresql+asyncpg://"
 )#.split("?")[0]
 
-engine = create_async_engine(DATABASE_URL, echo=False, poolclass=NullPool  # ← recommandé pour Neon)
+engine = create_async_engine(DATABASE_URL, echo=False, poolclass=NullPool)  # ← recommandé pour Neon)
 
 AsyncSessionLocal = async_sessionmaker(
     engine,
